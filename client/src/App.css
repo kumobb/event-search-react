@@ -1,0 +1,38 @@
+body {
+  width: 100%;
+  color: white;
+  background-image: url("/public/background.jpg");
+  background-position: center;
+  background-size: cover;
+  background-attachment: fixed;
+}
+
+.nav-link {
+  color: white !important;
+}
+
+.nav-link.active {
+  border: 1px solid white;
+  border-radius: 10px;
+}
+
+.blur-card {
+  background-color: rgb(120, 120, 120, 0.4);
+  border-radius: 30px;
+  backdrop-filter: blur(4px);
+}
+
+#search-form-container {
+  width: 95%;
+  max-width: 600px;
+}
+
+#search-form-title {
+  text-align: center;
+  color: white;
+  border-bottom: 1px solid;
+}
+
+#search-form label {
+  color: #93cae9;
+}
