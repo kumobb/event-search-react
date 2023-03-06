@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { ChangeEvent, useState } from "react";
 import { Button, Col, Container, Form, Row } from "react-bootstrap";
 import SearchKeyword from "./SearchKeyword";
 
@@ -10,8 +10,8 @@ interface SearchFormValues {
   auto: boolean;
 }
 
-const SearchForm: React.FC = () => {
-  const defaultFormValues: SearchFormValues = {
+const SearchForm = ({ onReset }: { onReset: () => void }) => {
+  const defaultFormValues = {
     keyword: "",
     distance: 10,
     category: "Default",
@@ -33,7 +33,14 @@ const SearchForm: React.FC = () => {
     `);
   };
 
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleKeywordChange = (keyword: string) => {
+    setFormValues({
+      ...formValues,
+      keyword,
+    });
+  };
+
+  const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { name, value, checked, type } = event.target;
 
     setFormValues({
@@ -44,6 +51,7 @@ const SearchForm: React.FC = () => {
 
   const handleClear = () => {
     setFormValues(defaultFormValues);
+    onReset();
   };
 
   return (
@@ -54,7 +62,7 @@ const SearchForm: React.FC = () => {
         </h1>
 
         <SearchKeyword
-          handleInputChange={handleInputChange}
+          onChange={handleKeywordChange}
           value={formValues.keyword}
         />
 
@@ -76,11 +84,14 @@ const SearchForm: React.FC = () => {
               <Form.Label>
                 Category<span style={{ color: "red" }}>*</span>
               </Form.Label>
-              <Form.Control
-                as="select"
+              <Form.Select
                 name="category"
                 value={formValues.category}
-                onChange={handleInputChange}
+                onChange={(e) =>
+                  handleInputChange(
+                    e as unknown as ChangeEvent<HTMLInputElement>
+                  )
+                }
                 required
               >
                 <option>Default</option>
@@ -89,7 +100,7 @@ const SearchForm: React.FC = () => {
                 <option value="Arts">Arts & Theatre</option>
                 <option>Film</option>
                 <option>Miscellaneous</option>
-              </Form.Control>
+              </Form.Select>
             </Form.Group>
           </Col>
         </Row>
@@ -101,7 +112,7 @@ const SearchForm: React.FC = () => {
           <Form.Control
             name="location"
             type="text"
-            value={formValues.auto ? "" : formValues.location}
+            value={formValues.location}
             disabled={formValues.auto}
             required
             onChange={handleInputChange}
