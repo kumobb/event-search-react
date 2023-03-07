@@ -6,12 +6,12 @@ const Navbar = () => {
   return (
     <Nav className="justify-content-end m-3">
       <Nav.Item>
-        <Nav.Link as={NavLink} to="/search">
+        <Nav.Link className="text-white" as={NavLink} to="/search">
           Search
         </Nav.Link>
       </Nav.Item>
       <Nav.Item>
-        <Nav.Link as={NavLink} to="/favorites">
+        <Nav.Link className="text-white" as={NavLink} to="/favorites">
           Favorites
         </Nav.Link>
       </Nav.Item>

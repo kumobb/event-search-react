@@ -30,14 +30,11 @@ const SearchKeyword = ({
     setOpen(true);
     setLoading(true);
     try {
-      const response: AxiosResponse<string[]> = await axios.get(
-        "http://localhost:3001/api/suggest",
-        {
-          params: {
-            keyword,
-          },
-        }
-      );
+      const response = await axios.get("http://localhost:3001/api/suggest", {
+        params: {
+          keyword,
+        },
+      });
       setOptions(response.data ? response.data : []);
       setLoading(false);
     } catch (error) {
@@ -63,6 +60,7 @@ const SearchKeyword = ({
         ref={typeaheadRef}
         className="typeahead"
         id="search-keyword"
+        delay={500}
         minLength={1}
         filterBy={() => true}
         open={open}

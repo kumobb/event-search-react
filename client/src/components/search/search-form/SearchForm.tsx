@@ -1,6 +1,9 @@
 import React, { ChangeEvent, useState } from "react";
 import { Button, Col, Container, Form, Row } from "react-bootstrap";
 import SearchKeyword from "./SearchKeyword";
+import { IEvent } from "../../routes/Search";
+import { getCoordinates } from "../../../utils/utils";
+import axios from "axios";
 
 interface SearchFormValues {
   keyword: string;
@@ -10,7 +13,13 @@ interface SearchFormValues {
   auto: boolean;
 }
 
-const SearchForm = ({ onReset }: { onReset: () => void }) => {
+const SearchForm = ({
+  onEventsChange,
+  onClear,
+}: {
+  onEventsChange: (events: IEvent[]) => void;
+  onClear: () => void;
+}) => {
   const defaultFormValues = {
     keyword: "",
     distance: 10,
@@ -22,15 +31,32 @@ const SearchForm = ({ onReset }: { onReset: () => void }) => {
   const [formValues, setFormValues] =
     useState<SearchFormValues>(defaultFormValues);
 
-  const handleSubmit = (event: React.FormEvent) => {
+  const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    alert(`
-      keyword: ${formValues.keyword}
-      distance: ${formValues.distance}
-      category: ${formValues.category}
-      location: ${formValues.location}
-      auto: ${formValues.auto}
-    `);
+
+    const location = await getCoordinates(formValues.auto, formValues.location);
+
+    if (!location) {
+      onEventsChange([]);
+      return;
+    }
+
+    try {
+      const response = await axios.get("http://localhost:3001/api/tickets", {
+        params: {
+          keyword: formValues.keyword,
+          distance: formValues.distance,
+          category: formValues.category,
+          lat: location?.lat,
+          lng: location?.lng,
+        },
+      });
+
+      const data = response.data;
+      onEventsChange(data);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const handleKeywordChange = (keyword: string) => {
@@ -51,13 +77,16 @@ const SearchForm = ({ onReset }: { onReset: () => void }) => {
 
   const handleClear = () => {
     setFormValues(defaultFormValues);
-    onReset();
+    onClear();
   };
 
   return (
-    <Container id="search-form-container" className="blur-card">
+    <Container
+      id="search-form-container"
+      className="main-container blur-card rounded-4"
+    >
       <Form id="search-form" className="px-2 py-5" onSubmit={handleSubmit}>
-        <h1 id="search-form-title" className="mb-3 pb-3">
+        <h1 className="mb-3 pb-3 border-bottom text-white text-center">
           Event Search
         </h1>
 
@@ -112,7 +141,7 @@ const SearchForm = ({ onReset }: { onReset: () => void }) => {
           <Form.Control
             name="location"
             type="text"
-            value={formValues.location}
+            value={formValues.auto ? "" : formValues.location}
             disabled={formValues.auto}
             required
             onChange={handleInputChange}
