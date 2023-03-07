@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Col, Container, Row } from "react-bootstrap";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
@@ -9,6 +9,7 @@ import FavoriteIcon from "@mui/icons-material/Favorite";
 import { Avatar } from "@mui/material";
 
 interface IEventDetails {
+  id: string;
   name: string;
   date: string;
   artist: string[];
@@ -28,7 +29,22 @@ const DetailsCard = ({
   onBackClick: () => void;
 }) => {
   const [tab, setTab] = useState(0);
-  const [fav, setFav] = useState(false);
+  const [favorite, setFavorite] = useState(false);
+
+  useEffect(() => {
+    if (!event) return;
+    const storedData = localStorage.getItem(event.id);
+    if (storedData) {
+      setFavorite(true);
+    }
+  }, [event]);
+
+  useEffect(() => {
+    if (!event) return;
+    favorite
+      ? localStorage.setItem(event.id, "liked")
+      : localStorage.removeItem(event.id);
+  }, [favorite]);
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
     setTab(newValue);
@@ -41,24 +57,24 @@ const DetailsCard = ({
       id="details-card-container"
       className="my-5 p-0 main-container blur-card"
     >
-      <p className="p-3 clickable">
+      <p className="p-3 clickable" onClick={onBackClick}>
         <ArrowBackIosNewIcon fontSize="small" />
-        <u onClick={onBackClick}>Back</u>
+        <u>Back</u>
       </p>
 
       <Row className="mb-3 justify-content-center">
         <Col md={"auto"}>
-          <h1 className="text-center">{event?.name}</h1>
+          <h2 className="text-center">{event?.name}</h2>
         </Col>
         <Col md={"auto"} className="my-auto">
           <Avatar
             sx={{ bgcolor: "white" }}
             className="mx-auto clickable"
             onClick={() => {
-              setFav(!fav);
+              setFavorite(!favorite);
             }}
           >
-            {fav ? (
+            {favorite ? (
               <FavoriteIcon sx={{ color: "#ea3323" }} />
             ) : (
               <FavoriteBorderIcon color="action" />

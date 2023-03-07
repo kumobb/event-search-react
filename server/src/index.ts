@@ -138,6 +138,7 @@ app.get("/api/event", async (req, res) => {
     }
 
     const event = {
+      id: data.id,
       name: data.name,
       date:
         data.dates.start.localDate +
