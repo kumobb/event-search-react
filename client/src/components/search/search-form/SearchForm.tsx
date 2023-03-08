@@ -42,15 +42,18 @@ const SearchForm = ({
     }
 
     try {
-      const response = await axios.get("http://localhost:3001/api/tickets", {
-        params: {
-          keyword: formValues.keyword,
-          distance: formValues.distance,
-          category: formValues.category,
-          lat: location?.lat,
-          lng: location?.lng,
-        },
-      });
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/tickets`,
+        {
+          params: {
+            keyword: formValues.keyword,
+            distance: formValues.distance,
+            category: formValues.category,
+            lat: location?.lat,
+            lng: location?.lng,
+          },
+        }
+      );
 
       const data = response.data;
       onEventsChange(data);

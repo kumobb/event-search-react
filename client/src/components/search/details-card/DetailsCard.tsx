@@ -71,6 +71,11 @@ const DetailsCard = ({
             sx={{ bgcolor: "white" }}
             className="mx-auto clickable"
             onClick={() => {
+              alert(
+                !favorite
+                  ? "Event Added to Favorites"
+                  : "Removed form Favorites"
+              );
               setFavorite(!favorite);
             }}
           >

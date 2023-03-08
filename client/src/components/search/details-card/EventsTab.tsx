@@ -1,6 +1,9 @@
 import React from "react";
 import { Container, Col, Row } from "react-bootstrap";
 import { IEventDetails } from "./DetailsCard";
+import TwitterIcon from "@mui/icons-material/Twitter";
+import FacebookIcon from "@mui/icons-material/Facebook";
+import { FACEBOOK_URL, TWITTER_URL } from "../../../utils/consts";
 
 const ticketStatus = {
   onsale: "On Sale",
@@ -74,10 +77,33 @@ const EventsTab = ({ event }: { event: IEventDetails | null }) => {
           </Col>
 
           <Col md={7} className="d-flex align-items-center my-1">
-            {event.map && <img src={event.map} className="img-fluid" />}
+            {event.map && (
+              <img src={event.map} className="img-fluid" alt="Seat Map" />
+            )}
           </Col>
         </Row>
       )}
+      <p>
+        Share on:{" "}
+        <a
+          href={
+            `${TWITTER_URL}` +
+            `text=Check ${event?.name} on Ticketmaster.%0a` +
+            `&url=${event?.link}`
+          }
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <TwitterIcon sx={{ color: "#6baae8" }} fontSize="large" />
+        </a>
+        <a
+          href={`${FACEBOOK_URL}` + `${event?.link}`}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <FacebookIcon sx={{ color: "#3975ea" }} fontSize="large" />
+        </a>
+      </p>
     </Container>
   );
 };

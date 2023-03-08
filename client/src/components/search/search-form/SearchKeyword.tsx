@@ -1,11 +1,11 @@
-import React, { useState, useCallback, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { Form } from "react-bootstrap";
-import axios, { AxiosResponse } from "axios";
-import { AsyncTypeahead, Hint } from "react-bootstrap-typeahead";
+import axios from "axios";
 import "react-bootstrap-typeahead/css/Typeahead.css";
 import "react-bootstrap-typeahead/css/Typeahead.bs5.css";
 import "./typeahead.css";
-import Typeahead from "react-bootstrap-typeahead/types/core/Typeahead";
+import { Autocomplete, CircularProgress } from "@mui/material";
+import { debounce } from "@mui/material/utils";
 
 const SearchKeyword = ({
   onChange,
@@ -16,33 +16,39 @@ const SearchKeyword = ({
 }) => {
   const [options, setOptions] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
-  const [open, setOpen] = useState(false);
 
-  const typeaheadRef = useRef<Typeahead>(null);
+  const search = React.useMemo(
+    () =>
+      debounce(async (keyword: string) => {
+        setLoading(true);
+        setOptions([]);
+        try {
+          const response = await axios.get(
+            `${process.env.REACT_APP_API_URL}/api/suggest`,
+            {
+              params: {
+                keyword,
+              },
+            }
+          );
+          setOptions(response.data ? response.data : []);
+          setLoading(false);
+        } catch (error) {
+          console.log(error);
+        }
+      }, 300),
+    []
+  );
 
   useEffect(() => {
-    if (value === "") {
-      typeaheadRef.current?.clear();
-    }
-  }, [value]);
-
-  const handleSearch = async (keyword: string) => {
-    setOpen(true);
-    setLoading(true);
-    try {
-      const response = await axios.get("http://localhost:3001/api/suggest", {
-        params: {
-          keyword,
-        },
-      });
-      setOptions(response.data ? response.data : []);
+    if (value.trim() === "") {
+      setOptions([]);
       setLoading(false);
-    } catch (error) {
-      console.log(error);
-    }
-  };
 
-  const _handleSearch = useCallback(handleSearch, []);
+      return;
+    }
+    search(value);
+  }, [value, search]);
 
   return (
     <Form.Group controlId="keyword" className="mb-3">
@@ -56,39 +62,32 @@ const SearchKeyword = ({
           *
         </span>
       </Form.Label>
-      <AsyncTypeahead
-        ref={typeaheadRef}
-        className="typeahead"
-        id="search-keyword"
-        delay={500}
-        minLength={1}
-        filterBy={() => true}
-        open={open}
+      <Autocomplete
+        autoComplete
+        includeInputInList
+        freeSolo
+        loading={loading}
         options={options}
-        isLoading={loading}
-        onSearch={_handleSearch}
-        onChange={(selected) => {
-          setOpen(false);
-          onChange(selected[0] as string);
+        inputValue={value}
+        loadingText={<CircularProgress color="inherit" size={20} />}
+        onChange={(event, newValue) => {
+          if (!newValue) return;
+          onChange(newValue);
         }}
-        onInputChange={(text, event) => {
-          onChange(event.target.value);
+        onInputChange={(event, newInputValue) => {
+          onChange(newInputValue);
         }}
-        onBlur={() => setOpen(false)}
-        renderInput={({ inputRef, referenceElementRef, ...inputProps }) => {
+        filterOptions={(x) => x}
+        renderInput={(params) => {
           return (
-            <Hint>
-              <Form.Control
-                {...inputProps}
-                name="keyword"
-                value={inputProps.value as string}
-                ref={(node: HTMLInputElement) => {
-                  inputRef(node);
-                  referenceElementRef(node);
-                }}
+            <div ref={params.InputProps.ref}>
+              <input
+                type="text"
+                {...params.inputProps}
+                className="form-control"
                 required
               />
-            </Hint>
+            </div>
           );
         }}
       />

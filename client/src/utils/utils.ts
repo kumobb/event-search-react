@@ -1,3 +1,4 @@
+import axios from "axios";
 import { GEOCODE_URL, IPINFO_URL } from "./consts";
 
 const getCoordinates = async (auto: boolean, location: string) => {
@@ -9,8 +10,14 @@ const getCoordinates = async (auto: boolean, location: string) => {
     url = GEOCODE_URL + location.split(" ").join("+");
   }
 
-  const resp = await fetch(url);
-  const json = await resp.json();
+  let json;
+
+  try {
+    const response = await axios.get(url);
+    json = response.data;
+  } catch (error) {
+    console.log(error);
+  }
 
   if (auto) {
     let coord = json.loc.split(",");

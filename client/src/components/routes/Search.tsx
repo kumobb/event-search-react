@@ -22,12 +22,14 @@ const Search = () => {
 
   const handleEventsChange = (events: IEvent[]) => {
     setTableOpen(true);
+    setCardOpen(false);
     setEvents(events);
   };
 
   const handleClear = () => {
     setEvents([]);
     setTableOpen(false);
+    setCardOpen(false);
   };
 
   const handleEventClick = async (id: string) => {
@@ -36,11 +38,14 @@ const Search = () => {
     setCardOpen(true);
 
     try {
-      const response = await axios.get("http://localhost:3001/api/event", {
-        params: {
-          id,
-        },
-      });
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/event`,
+        {
+          params: {
+            id,
+          },
+        }
+      );
 
       setEvent(response.data);
     } catch (error) {
@@ -59,7 +64,7 @@ const Search = () => {
       {tableOpen && (
         <ResultsTable events={events} onEventClick={handleEventClick} />
       )}
-      {cardOpen && <DetailsCard event={event} onBackClick={handleBackClick} />}
+      {<DetailsCard event={event} onBackClick={handleBackClick} />}
     </>
   );
 };
