@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { Form } from "react-bootstrap";
 import axios from "axios";
 import "react-bootstrap-typeahead/css/Typeahead.css";
@@ -17,7 +17,7 @@ const SearchKeyword = ({
   const [options, setOptions] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
 
-  const search = React.useMemo(
+  const search = useMemo(
     () =>
       debounce(async (keyword: string) => {
         setLoading(true);
@@ -48,7 +48,7 @@ const SearchKeyword = ({
       return;
     }
     search(value);
-  }, [value, search]);
+  }, [value]);
 
   return (
     <Form.Group controlId="keyword" className="mb-3">

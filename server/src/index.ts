@@ -10,6 +10,7 @@ import {
 } from "./consts";
 import * as geohash from "ngeohash";
 import { logRequests } from "./middlewares";
+import spotify from "./spotify";
 
 const app = express();
 const port = 3001;
@@ -103,40 +104,6 @@ app.get("/api/event", async (req, res) => {
 
     const data = response.data;
 
-    const genre: string[] = [];
-    const eventGenres = data.classifications[0];
-
-    if (
-      eventGenres.segment &&
-      eventGenres.segment.name.toLowerCase() !== "undefined"
-    ) {
-      genre.push(eventGenres.segment.name);
-    }
-    if (
-      eventGenres.genre &&
-      eventGenres.genre.name.toLowerCase() !== "undefined"
-    ) {
-      genre.push(eventGenres.genre.name);
-    }
-    if (
-      eventGenres.subGenre &&
-      eventGenres.subGenre.name.toLowerCase() !== "undefined"
-    ) {
-      genre.push(eventGenres.subGenre.name);
-    }
-    if (
-      eventGenres.type &&
-      eventGenres.type.name.toLowerCase() !== "undefined"
-    ) {
-      genre.push(eventGenres.type.name);
-    }
-    if (
-      eventGenres.subType &&
-      eventGenres.subType.name.toLowerCase() !== "undefined"
-    ) {
-      genre.push(eventGenres.subType.name);
-    }
-
     const event = {
       id: data.id,
       name: data.name,
@@ -144,9 +111,20 @@ app.get("/api/event", async (req, res) => {
         data.dates.start.localDate +
         " " +
         (data.dates.start.localTime ? data.dates.start.localTime : ""),
-      artist: data._embedded.attractions?.map((a: any) => a.name),
+      artists: data._embedded.attractions?.map((a: any) => {
+        return { name: a.name, segment: a.classifications[0].segment.name };
+      }),
       venue: data._embedded.venues[0].name,
-      genre,
+      genre: [
+        data.classifications[0].segment,
+        data.classifications[0].genre,
+        data.classifications[0].subGenre,
+        data.classifications[0].type,
+        data.classifications[0].subType,
+      ]
+        .filter((g) => g)
+        .filter((g) => g.name.toLowerCase() !== "undefined")
+        .map((g) => g.name),
       price: data.priceRanges
         ? data.priceRanges[0].min +
           " - " +
@@ -164,6 +142,48 @@ app.get("/api/event", async (req, res) => {
     console.log(error);
     res.status(500).send("Error fetching event details from Ticketmaster");
   }
+});
+
+app.get("/api/artist", async (req, res) => {
+  const keyword = req.query.keyword as string;
+
+  let tryCount = 0;
+  const maxTries = 3;
+
+  while (tryCount < maxTries) {
+    try {
+      const response = await spotify.searchArtists(keyword);
+      res.send(
+        response.body.artists?.items
+          .filter((a) => a.name.toLowerCase() === keyword.toLowerCase())
+          .map((a) => {
+            return {
+              id: a.id,
+              name: a.name,
+              followers: a.followers.total,
+              popularity: a.popularity,
+              link: a.uri,
+              image: a.images[0].url,
+            };
+          })[0]
+      );
+      return;
+    } catch (error) {
+      tryCount++;
+
+      try {
+        const data = await spotify.clientCredentialsGrant();
+        spotify.setAccessToken(data.body["access_token"]);
+      } catch (error) {
+        console.log(
+          "Something went wrong when retrieving an access token, retrying...",
+          error
+        );
+      }
+    }
+  }
+
+  res.status(500).send("Error fetching artists details from Spotify");
 });
 
 app.listen(port, () => {

@@ -1,50 +1,80 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Col, Container, Row } from "react-bootstrap";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
-import EventsTab from "./EventsTab";
+import EventsTab, { IEventDetails } from "./EventsTab";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import { Avatar } from "@mui/material";
-
-interface IEventDetails {
-  id: string;
-  name: string;
-  date: string;
-  artist: string[];
-  venue: string;
-  genre: string[];
-  price: string;
-  status: string;
-  link: string;
-  map: string;
-}
+import ArtistsTab, { IArtistDetails } from "./ArtistsTab";
+import axios from "axios";
 
 const DetailsCard = ({
-  event,
+  eventId,
   onBackClick,
 }: {
-  event: IEventDetails | null;
+  eventId: string;
   onBackClick: () => void;
 }) => {
   const [tab, setTab] = useState(0);
   const [favorite, setFavorite] = useState(false);
+  const [eventDetails, setEventDetails] = useState<IEventDetails | null>(null);
+  const [artistsDetails, setArtistsDetails] = useState<IArtistDetails[]>([]);
+  const [venue, setVenu] = useState<String>("");
 
   useEffect(() => {
-    if (!event) return;
-    const storedData = localStorage.getItem(event.id);
-    if (storedData) {
-      setFavorite(true);
-    }
-  }, [event]);
+    const fetchData = async () => {
+      try {
+        const eventResponse = await axios.get(
+          `${process.env.REACT_APP_API_URL}/api/event`,
+          {
+            params: {
+              id: eventId,
+            },
+          }
+        );
 
-  useEffect(() => {
-    if (!event) return;
-    favorite
-      ? localStorage.setItem(event.id, "liked")
-      : localStorage.removeItem(event.id);
-  }, [favorite]);
+        setEventDetails(eventResponse.data);
+
+        const storedData = localStorage.getItem(eventId);
+        if (storedData) {
+          setFavorite(true);
+        }
+
+        const artists = eventResponse.data.artists as {
+          name: string;
+          segment: string;
+        }[];
+
+        const artistDetails: IArtistDetails[] = [];
+        await Promise.all(
+          artists
+            .filter((a) => a.segment === "Music")
+            .map(async (a) => {
+              try {
+                const artistResponse = await axios.get(
+                  `${process.env.REACT_APP_API_URL}/api/artist`,
+                  {
+                    params: {
+                      keyword: a.name,
+                    },
+                  }
+                );
+                artistDetails.push(artistResponse.data);
+              } catch (error) {
+                console.log(error);
+              }
+            })
+        );
+        setArtistsDetails(artistDetails);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
     setTab(newValue);
@@ -64,18 +94,20 @@ const DetailsCard = ({
 
       <Row className="mb-3 justify-content-center">
         <Col md={"auto"}>
-          <h2 className="text-center">{event?.name}</h2>
+          <h2 className="text-center">{eventDetails?.name}</h2>
         </Col>
         <Col md={"auto"} className="my-auto">
           <Avatar
             sx={{ bgcolor: "white" }}
             className="mx-auto clickable"
             onClick={() => {
-              alert(
-                !favorite
-                  ? "Event Added to Favorites"
-                  : "Removed form Favorites"
-              );
+              if (favorite) {
+                alert("Removed form Favorites");
+                localStorage.removeItem(eventId);
+              } else {
+                alert("Event Added to Favorites");
+                localStorage.setItem(eventId, "liked");
+              }
               setFavorite(!favorite);
             }}
           >
@@ -98,10 +130,10 @@ const DetailsCard = ({
         <Tab label="Artist/Teams" className="text-white" sx={tabStyle} />
         <Tab label="Venue" className="text-white" sx={tabStyle} />
       </Tabs>
-      {tab === 0 && <EventsTab event={event} />}
+      {tab === 0 && <EventsTab eventDetails={eventDetails} />}
+      {tab === 1 && <ArtistsTab artistsDetails={artistsDetails} />}
     </Container>
   );
 };
 
 export default DetailsCard;
-export type { IEventDetails };
