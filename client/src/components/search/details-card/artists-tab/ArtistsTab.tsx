@@ -1,7 +1,5 @@
-import { Avatar, Box, CircularProgress, Typography } from "@mui/material";
 import React from "react";
-import { Carousel, Col, Container, Row } from "react-bootstrap";
-import { Icon } from "@iconify/react";
+import { Carousel, Container } from "react-bootstrap";
 import ArtistCarouselItem from "./ArtistCarouselItem";
 
 interface IArtistDetails {
@@ -20,10 +18,10 @@ const ArtistsTab = ({
   artistsDetails: IArtistDetails[];
 }) => {
   return (
-    <Container className="py-3 px-0" id="artists-tab">
-      {artistsDetails.length === 0 ? (
-        <div className="py-5">
-          <p className="text-danger bg-white rounded-4 text-center">
+    <Container className="py-3 px-0 details-tab text-center">
+      {!artistsDetails || artistsDetails.length === 0 ? (
+        <div className="px-3 py-5">
+          <p className="text-danger bg-white rounded-4 ">
             No music related artist details to show
           </p>
         </div>

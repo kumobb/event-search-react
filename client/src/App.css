@@ -49,6 +49,13 @@ body {
   background-color: #5c9789;
 }
 
+.details-tab h2,
+.details-tab h3,
+.details-tab h4,
+.details-tab h5 {
+  color: #9cfce6;
+}
+
 #events-tab-details h4,
 #artists-tab h3,
 #artists-tab h4,
@@ -74,4 +81,20 @@ body {
 
 [ticket-status="canceled"] {
   background-color: black;
+}
+
+/* https://stackoverflow.com/questions/72228723/how-to-set-maximum-line-of-text-using-flex-css-react */
+.clamp-line {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+
+.clamp-line-open {
+  -webkit-line-clamp: unset;
+}
+
+.map-backdrop {
+  background-color: unset !important;
 }

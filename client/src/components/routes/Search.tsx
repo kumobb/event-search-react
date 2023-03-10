@@ -1,4 +1,3 @@
-import axios from "axios";
 import React, { useState } from "react";
 import DetailsCard from "../search/details-card/DetailsCard";
 import ResultsTable from "../search/results-table/ResultsTable";

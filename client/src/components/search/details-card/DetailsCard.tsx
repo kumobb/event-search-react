@@ -1,17 +1,15 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Carousel, Col, Container, Row } from "react-bootstrap";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
-import EventsTab, { IEventDetails } from "./EventsTab";
+import EventsTab, { IEventDetails } from "./event-tab/EventsTab";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import { Avatar } from "@mui/material";
-import ArtistsTab, { IArtistDetails } from "./ArtistsTab";
+import ArtistsTab, { IArtistDetails } from "./artists-tab/ArtistsTab";
 import axios from "axios";
-import type { Swiper as SwiperType } from "swiper";
-import { Swiper, SwiperSlide } from "swiper/react";
-import "swiper/css";
+import VenueTab, { IVenueDetails } from "./venue-tab/VenueTab";
 
 const DetailsCard = ({
   eventId,
@@ -24,13 +22,12 @@ const DetailsCard = ({
   const [favorite, setFavorite] = useState(false);
   const [eventDetails, setEventDetails] = useState<IEventDetails | null>(null);
   const [artistsDetails, setArtistsDetails] = useState<IArtistDetails[]>([]);
-  const [venue, setVenu] = useState<String>("");
-
-  const [swiper, setSwiper] = useState<SwiperType | null>(null);
+  const [venueDetails, setVenueDetails] = useState<IVenueDetails | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
+        // fetch event details
         const eventResponse = await axios.get(
           `${process.env.REACT_APP_API_URL}/api/event`,
           {
@@ -39,28 +36,24 @@ const DetailsCard = ({
             },
           }
         );
-
         setEventDetails(eventResponse.data);
-
         const storedData = localStorage.getItem(eventId);
         if (storedData) {
           setFavorite(true);
         }
 
+        // fetch aritists details
         const artists = eventResponse.data.artists as {
           name: string;
           segment: string;
         }[];
-
         if (!artists) {
           setArtistsDetails([]);
-          return;
-        }
-        const artistDetails = await Promise.all(
-          artists
-            .filter((a) => a.segment === "Music")
-            .map(async (a) => {
-              try {
+        } else {
+          const artistDetails = await Promise.all(
+            artists
+              .filter((a) => a.segment === "Music")
+              .map(async (a) => {
                 const artistResponse = await axios.get(
                   `${process.env.REACT_APP_API_URL}/api/artist`,
                   {
@@ -70,25 +63,37 @@ const DetailsCard = ({
                   }
                 );
                 return artistResponse.data;
-              } catch (error) {
-                console.log(error);
-              }
-            })
-        );
-        setArtistsDetails(artistDetails);
+              })
+          );
+          setArtistsDetails(artistDetails.filter((a) => a));
+        }
+
+        // fetch venue details
+        const venue = eventResponse.data.venue;
+        if (!venue) {
+          setVenueDetails(null);
+        } else {
+          const venueResponse = await axios.get(
+            `${process.env.REACT_APP_API_URL}/api/venue`,
+            {
+              params: {
+                keyword: venue,
+              },
+            }
+          );
+
+          setVenueDetails(venueResponse.data);
+        }
       } catch (error) {
         console.log(error);
       }
     };
 
     fetchData();
-  }, []);
+  }, [eventId]);
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
-    if (swiper) {
-      setTab(newValue);
-      swiper.slideTo(newValue);
-    }
+    setTab(newValue);
   };
 
   return (
@@ -154,18 +159,24 @@ const DetailsCard = ({
           sx={{ textTransform: "none" }}
         />
       </Tabs>
-      <Swiper
-        autoHeight={true}
-        allowTouchMove={false}
-        onSwiper={(swiper) => setSwiper(swiper)}
+
+      <Carousel
+        activeIndex={tab}
+        touch={false}
+        interval={null}
+        indicators={false}
+        controls={false}
       >
-        <SwiperSlide>
+        <Carousel.Item>
           <EventsTab eventDetails={eventDetails} />
-        </SwiperSlide>
-        <SwiperSlide>
+        </Carousel.Item>
+        <Carousel.Item>
           <ArtistsTab artistsDetails={artistsDetails} />
-        </SwiperSlide>
-      </Swiper>
+        </Carousel.Item>
+        <Carousel.Item>
+          <VenueTab venueDetails={venueDetails} />
+        </Carousel.Item>
+      </Carousel>
     </Container>
   );
 };

@@ -2,7 +2,7 @@ import React from "react";
 import { Container, Col, Row } from "react-bootstrap";
 import TwitterIcon from "@mui/icons-material/Twitter";
 import FacebookIcon from "@mui/icons-material/Facebook";
-import { FACEBOOK_URL, TWITTER_URL } from "../../../utils/consts";
+import { FACEBOOK_URL, TWITTER_URL } from "../../../../utils/consts";
 
 interface IEventDetails {
   id: string;
@@ -37,15 +37,13 @@ const EventsTab = ({
   return (
     <Container className="py-4 text-center">
       {eventDetails && (
-        <Row>
-          <Col id="events-tab-details" md={5}>
-            <div>
-              <h4>Date</h4>
-              <p>{eventDetails.date}</p>
-            </div>
+        <Row className="details-tab">
+          <Col md={5}>
+            <h4>Date</h4>
+            <p>{eventDetails.date}</p>
 
             {eventDetails.artists && (
-              <div>
+              <>
                 <h4>Artist/Team</h4>
                 <p>
                   {eventDetails.artists.map((a, i) => {
@@ -55,57 +53,55 @@ const EventsTab = ({
                     );
                   })}
                 </p>
-              </div>
+              </>
             )}
 
             {eventDetails.venue && (
-              <div>
+              <>
                 <h4>Venue</h4>
                 <p>{eventDetails.venue}</p>
-              </div>
+              </>
             )}
 
             {eventDetails.genre.length > 0 && (
-              <div>
+              <>
                 <h4>Genre</h4>
                 <p>
                   {eventDetails.genre.map((g, i) => {
                     return g + (i < eventDetails.genre.length - 1 ? " | " : "");
                   })}
                 </p>
-              </div>
+              </>
             )}
 
             {eventDetails.price && (
-              <div>
+              <>
                 <h4>Price Ranges</h4>
                 <p>{eventDetails.price}</p>
-              </div>
+              </>
             )}
 
-            <div>
-              <h4>Ticket Status</h4>
-              <div className="my-2">
-                <span
-                  className="p-1 rounded-3"
-                  ticket-status={eventDetails.status}
-                >
-                  {
-                    ticketStatus[
-                      eventDetails.status as keyof typeof ticketStatus
-                    ]
-                  }
-                </span>
-              </div>
+            <h4>Ticket Status</h4>
+            <div className="my-2">
+              <span
+                className="p-1 rounded-3"
+                ticket-status={eventDetails.status}
+              >
+                {ticketStatus[eventDetails.status as keyof typeof ticketStatus]}
+              </span>
             </div>
 
-            <div>
-              <h4>Buy Ticket At:</h4>
-              <a href={eventDetails.link}>Ticketmaster</a>
-            </div>
+            <h4>Buy Ticket At:</h4>
+            <a
+              target="_blank"
+              rel="noopener noreferrer"
+              href={eventDetails.link}
+            >
+              Ticketmaster
+            </a>
           </Col>
 
-          <Col md={7} className="d-flex align-items-center my-1">
+          <Col md={7} className="d-flex align-items-center my-3">
             {eventDetails.map && (
               <img
                 src={eventDetails.map}
@@ -130,7 +126,7 @@ const EventsTab = ({
           <TwitterIcon sx={{ color: "#6baae8" }} fontSize="large" />
         </a>
         <a
-          href={`${FACEBOOK_URL}` + `${eventDetails?.link}`}
+          href={`${FACEBOOK_URL}${eventDetails?.link}`}
           target="_blank"
           rel="noopener noreferrer"
         >

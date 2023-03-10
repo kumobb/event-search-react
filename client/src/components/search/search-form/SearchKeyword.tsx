@@ -1,8 +1,6 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { Form } from "react-bootstrap";
 import axios from "axios";
-import "react-bootstrap-typeahead/css/Typeahead.css";
-import "react-bootstrap-typeahead/css/Typeahead.bs5.css";
 import "./typeahead.css";
 import { Autocomplete, CircularProgress } from "@mui/material";
 import { debounce } from "@mui/material/utils";
@@ -48,7 +46,7 @@ const SearchKeyword = ({
       return;
     }
     search(value);
-  }, [value]);
+  }, [value, search]);
 
   return (
     <Form.Group controlId="keyword" className="mb-3">

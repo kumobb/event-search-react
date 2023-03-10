@@ -7,6 +7,7 @@ import {
   TICKET_URL,
   EVENT_URL,
   SEGMENTS,
+  VENUE_URL,
 } from "./consts";
 import * as geohash from "ngeohash";
 import { logRequests } from "./middlewares";
@@ -199,6 +200,38 @@ app.get("/api/artist", async (req, res) => {
   }
 
   res.status(500).send("Error fetching artists details from Spotify");
+});
+
+app.get("/api/venue", async (req, res) => {
+  const keyword = req.query.keyword;
+
+  try {
+    const response = await axios.get(VENUE_URL, {
+      params: {
+        apikey: API_KEY,
+        keyword,
+      },
+    });
+
+    const venue = response.data._embedded?.venues[0];
+
+    if (!venue) res.send(null);
+
+    res.send({
+      name: venue.name,
+      address:
+        (venue.address?.line1 ? `${venue.address.line1}, ` : "") +
+        (venue.city?.name ? `${venue.city.name}, ` : "") +
+        (venue.state?.name ? `${venue.state.name}` : ""),
+      number: venue.boxOfficeInfo?.phoneNumberDetail,
+      openHours: venue.boxOfficeInfo?.openHoursDetail,
+      generalRule: venue.generalInfo?.generalRule,
+      childRule: venue.generalInfo?.childRule,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send("Error fetching venue details from Ticketmaster");
+  }
 });
 
 app.listen(port, () => {

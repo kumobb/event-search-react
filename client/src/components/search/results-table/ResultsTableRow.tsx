@@ -16,7 +16,7 @@ const ResultsTableRow = ({
         {event.time ? event.time : ""}
       </td>
       <td>
-        <img src={event.image} className="w-100 img-fluid" />
+        <img alt="Event" src={event.image} className="w-100 img-fluid" />
       </td>
       <td>{event.event}</td>
       <td>{event.genre}</td>

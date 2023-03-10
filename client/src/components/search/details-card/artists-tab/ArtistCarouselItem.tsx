@@ -1,13 +1,13 @@
 import { Icon } from "@iconify/react";
 import { Avatar, Box, CircularProgress, Typography } from "@mui/material";
 import React from "react";
-import { Col, Container, Row } from "react-bootstrap";
+import { Col, Row } from "react-bootstrap";
 import { IArtistDetails } from "./ArtistsTab";
 
 const ArtistCarouselItem = ({ artist }: { artist: IArtistDetails }) => {
   return (
     <>
-      <Row className="text-center justify-content-evenly mb-3">
+      <Row className="justify-content-evenly mb-3">
         <Col sm={12} md={"auto"}>
           <Avatar
             alt="Artist Image"
@@ -15,7 +15,7 @@ const ArtistCarouselItem = ({ artist }: { artist: IArtistDetails }) => {
             sx={{ width: 128, height: 128 }}
             className="mx-auto"
           />
-          <h3 className="mx-auto">{artist.name}</h3>
+          <h2 className="mx-auto">{artist.name}</h2>
         </Col>
         <Col sm={12} md={"auto"} className="py-3 pt-md-5">
           <h4>Popularity</h4>
@@ -52,7 +52,7 @@ const ArtistCarouselItem = ({ artist }: { artist: IArtistDetails }) => {
           </a>
         </Col>
       </Row>
-      <Row className="justify-content-evenly text-center text-md-start px-5">
+      <Row className="justify-content-evenly text-md-start px-5">
         <h5>Album featuring {artist.name}</h5>
         {artist.albums.map((a, i) => (
           <Col sm={12} md={4} key={i} className="my-2">
