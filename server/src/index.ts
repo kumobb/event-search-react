@@ -153,20 +153,35 @@ app.get("/api/artist", async (req, res) => {
   while (tryCount < maxTries) {
     try {
       const response = await spotify.searchArtists(keyword);
-      res.send(
-        response.body.artists?.items
-          .filter((a) => a.name.toLowerCase() === keyword.toLowerCase())
-          .map((a) => {
-            return {
-              id: a.id,
-              name: a.name,
-              followers: a.followers.total,
-              popularity: a.popularity,
-              link: a.uri,
-              image: a.images[0].url,
-            };
-          })[0]
+
+      const artistDetails = response.body.artists?.items
+        .filter((a) => a.name.toLowerCase() === keyword.toLowerCase())
+        .map((a) => {
+          return {
+            id: a.id,
+            name: keyword,
+            followers: a.followers.total,
+            popularity: a.popularity,
+            link: a.uri,
+            image: a.images[0].url,
+            albums: [] as string[],
+          };
+        })[0];
+
+      if (!artistDetails) {
+        res.send(artistDetails);
+        return;
+      }
+
+      const albumResponse = await spotify.getArtistAlbums(artistDetails.id, {
+        limit: 3,
+      });
+
+      artistDetails.albums = albumResponse.body.items.map(
+        (a) => a.images[0].url
       );
+
+      res.send(artistDetails);
       return;
     } catch (error) {
       tryCount++;

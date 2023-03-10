@@ -6,18 +6,14 @@ body {
   background-attachment: fixed;
 }
 
-.clickable:hover {
-  cursor: pointer;
-}
-
 .nav-link.active {
   border: 1px solid white;
   border-radius: 10px;
 }
 
 .blur-card {
-  background-color: rgb(100, 100, 100, 0.5);
-  backdrop-filter: blur(5px);
+  background-color: rgb(150, 150, 150, 0.3);
+  backdrop-filter: blur(10px);
 }
 
 .main-container {
@@ -53,7 +49,10 @@ body {
   background-color: #5c9789;
 }
 
-#details-card-events-details h4 {
+#events-tab-details h4,
+#artists-tab h3,
+#artists-tab h4,
+#artists-tab h5 {
   color: #9cfce6;
 }
 

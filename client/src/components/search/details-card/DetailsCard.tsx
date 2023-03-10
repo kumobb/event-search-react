@@ -1,5 +1,5 @@
-import React, { useCallback, useEffect, useState } from "react";
-import { Col, Container, Row } from "react-bootstrap";
+import React, { useEffect, useRef, useState } from "react";
+import { Carousel, Col, Container, Row } from "react-bootstrap";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import EventsTab, { IEventDetails } from "./EventsTab";
@@ -9,6 +9,9 @@ import FavoriteIcon from "@mui/icons-material/Favorite";
 import { Avatar } from "@mui/material";
 import ArtistsTab, { IArtistDetails } from "./ArtistsTab";
 import axios from "axios";
+import type { Swiper as SwiperType } from "swiper";
+import { Swiper, SwiperSlide } from "swiper/react";
+import "swiper/css";
 
 const DetailsCard = ({
   eventId,
@@ -22,6 +25,8 @@ const DetailsCard = ({
   const [eventDetails, setEventDetails] = useState<IEventDetails | null>(null);
   const [artistsDetails, setArtistsDetails] = useState<IArtistDetails[]>([]);
   const [venue, setVenu] = useState<String>("");
+
+  const [swiper, setSwiper] = useState<SwiperType | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -47,8 +52,11 @@ const DetailsCard = ({
           segment: string;
         }[];
 
-        const artistDetails: IArtistDetails[] = [];
-        await Promise.all(
+        if (!artists) {
+          setArtistsDetails([]);
+          return;
+        }
+        const artistDetails = await Promise.all(
           artists
             .filter((a) => a.segment === "Music")
             .map(async (a) => {
@@ -61,7 +69,7 @@ const DetailsCard = ({
                     },
                   }
                 );
-                artistDetails.push(artistResponse.data);
+                return artistResponse.data;
               } catch (error) {
                 console.log(error);
               }
@@ -77,20 +85,23 @@ const DetailsCard = ({
   }, []);
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
-    setTab(newValue);
+    if (swiper) {
+      setTab(newValue);
+      swiper.slideTo(newValue);
+    }
   };
-
-  const tabStyle = { textTransform: "none" };
 
   return (
     <Container
       id="details-card-container"
       className="my-5 p-0 main-container blur-card"
     >
-      <p className="p-3 clickable" onClick={onBackClick}>
-        <ArrowBackIosNewIcon fontSize="small" />
-        <u>Back</u>
-      </p>
+      <div className="p-3">
+        <span role="button" onClick={onBackClick}>
+          <ArrowBackIosNewIcon fontSize="small" />
+          <u>Back</u>
+        </span>
+      </div>
 
       <Row className="mb-3 justify-content-center">
         <Col md={"auto"}>
@@ -99,7 +110,8 @@ const DetailsCard = ({
         <Col md={"auto"} className="my-auto">
           <Avatar
             sx={{ bgcolor: "white" }}
-            className="mx-auto clickable"
+            role={"button"}
+            className="mx-auto"
             onClick={() => {
               if (favorite) {
                 alert("Removed form Favorites");
@@ -126,12 +138,34 @@ const DetailsCard = ({
         onChange={handleTabChange}
         centered
       >
-        <Tab label="Events" className="text-white" sx={tabStyle} />
-        <Tab label="Artist/Teams" className="text-white" sx={tabStyle} />
-        <Tab label="Venue" className="text-white" sx={tabStyle} />
+        <Tab
+          label="Events"
+          className="text-white"
+          sx={{ textTransform: "none" }}
+        />
+        <Tab
+          label="Artist/Teams"
+          className="text-white"
+          sx={{ textTransform: "none" }}
+        />
+        <Tab
+          label="Venue"
+          className="text-white"
+          sx={{ textTransform: "none" }}
+        />
       </Tabs>
-      {tab === 0 && <EventsTab eventDetails={eventDetails} />}
-      {tab === 1 && <ArtistsTab artistsDetails={artistsDetails} />}
+      <Swiper
+        autoHeight={true}
+        allowTouchMove={false}
+        onSwiper={(swiper) => setSwiper(swiper)}
+      >
+        <SwiperSlide>
+          <EventsTab eventDetails={eventDetails} />
+        </SwiperSlide>
+        <SwiperSlide>
+          <ArtistsTab artistsDetails={artistsDetails} />
+        </SwiperSlide>
+      </Swiper>
     </Container>
   );
 };

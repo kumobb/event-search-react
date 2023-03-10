@@ -38,7 +38,7 @@ const EventsTab = ({
     <Container className="py-4 text-center">
       {eventDetails && (
         <Row>
-          <Col id="details-card-events-details" md={5}>
+          <Col id="events-tab-details" md={5}>
             <div>
               <h4>Date</h4>
               <p>{eventDetails.date}</p>
