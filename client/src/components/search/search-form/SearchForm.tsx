@@ -2,7 +2,7 @@ import React, { ChangeEvent, useState } from "react";
 import { Button, Col, Container, Form, Row } from "react-bootstrap";
 import SearchKeyword from "./SearchKeyword";
 import { IEvent } from "../../routes/Search";
-import { getCoordinates } from "../../../utils/utils";
+import { getCoordinates } from "../../../utils/coordinates";
 import axios from "axios";
 
 interface SearchFormValues {
@@ -14,9 +14,11 @@ interface SearchFormValues {
 }
 
 const SearchForm = ({
+  closeTable,
   onEventsChange,
   onClear,
 }: {
+  closeTable: () => void;
   onEventsChange: (events: IEvent[]) => void;
   onClear: () => void;
 }) => {
@@ -33,6 +35,7 @@ const SearchForm = ({
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
+    closeTable();
 
     const location = await getCoordinates(formValues.auto, formValues.location);
 

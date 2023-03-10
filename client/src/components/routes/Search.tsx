@@ -19,10 +19,14 @@ const Search = () => {
   const [tableOpen, setTableOpen] = useState(false);
   const [cardOpen, setCardOpen] = useState(false);
 
+  const closeTable = () => {
+    setTableOpen(false);
+  };
+
   const handleEventsChange = (events: IEvent[]) => {
-    setTableOpen(true);
-    setCardOpen(false);
     setEvents(events);
+    setCardOpen(false);
+    setTableOpen(true);
   };
 
   const handleClear = () => {
@@ -44,7 +48,11 @@ const Search = () => {
 
   return (
     <>
-      <SearchForm onEventsChange={handleEventsChange} onClear={handleClear} />
+      <SearchForm
+        closeTable={closeTable}
+        onEventsChange={handleEventsChange}
+        onClear={handleClear}
+      />
       {tableOpen && (
         <ResultsTable events={events} onEventClick={handleEventClick} />
       )}

@@ -108,10 +108,8 @@ app.get("/api/event", async (req, res) => {
     const event = {
       id: data.id,
       name: data.name,
-      date:
-        data.dates.start.localDate +
-        " " +
-        (data.dates.start.localTime ? data.dates.start.localTime : ""),
+      date: data.dates.start.localDate,
+      time: data.dates.start.localTime,
       artists: data._embedded.attractions?.map((a: any) => {
         return { name: a.name, segment: a.classifications[0].segment.name };
       }),

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Button, Modal } from "react-bootstrap";
 import { GoogleMap, MarkerF, useJsApiLoader } from "@react-google-maps/api";
 
-import { getCoordinates } from "../../../../utils/utils";
+import { getCoordinates } from "../../../../utils/coordinates";
 import { GOOGLEMAP_KEY } from "../../../../utils/consts";
 
 interface Coord {
@@ -49,7 +49,6 @@ const GoogleMapModal = ({
             mapContainerStyle={containerStyle}
             center={coordinates}
             zoom={15}
-            onLoad={() => console.log(coordinates)}
           >
             <MarkerF position={coordinates} />
           </GoogleMap>

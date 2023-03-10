@@ -8,6 +8,7 @@ interface IEventDetails {
   id: string;
   name: string;
   date: string;
+  time: string;
   artists: {
     name: string;
     segment: string;
@@ -40,7 +41,10 @@ const EventsTab = ({
         <Row className="details-tab">
           <Col md={5}>
             <h4>Date</h4>
-            <p>{eventDetails.date}</p>
+            <p>
+              {eventDetails.date +
+                (eventDetails.time ? ` ${eventDetails.time}` : "")}
+            </p>
 
             {eventDetails.artists && (
               <>

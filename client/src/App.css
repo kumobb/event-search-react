@@ -28,16 +28,8 @@ body {
   color: #93cae9;
 }
 
-#results-table-container {
+.table-container {
   max-width: 1000px;
-}
-
-#results-table {
-  overflow: hidden;
-}
-
-.results-table-row:hover {
-  cursor: pointer;
 }
 
 #details-card-container {
@@ -53,13 +45,6 @@ body {
 .details-tab h3,
 .details-tab h4,
 .details-tab h5 {
-  color: #9cfce6;
-}
-
-#events-tab-details h4,
-#artists-tab h3,
-#artists-tab h4,
-#artists-tab h5 {
   color: #9cfce6;
 }
 

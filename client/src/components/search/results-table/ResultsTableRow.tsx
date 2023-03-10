@@ -9,7 +9,7 @@ const ResultsTableRow = ({
   onClick: () => void;
 }) => {
   return (
-    <tr className="results-table-row" onClick={onClick}>
+    <tr role="button" onClick={onClick}>
       <td>
         {event.date}
         <br />

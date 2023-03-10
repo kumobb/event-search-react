@@ -11,16 +11,12 @@ const ResultsTable = ({
   onEventClick: (id: string) => void;
 }) => {
   return (
-    <Container
-      id="results-table-container"
-      className="mt-5 main-container p-0 text-center"
-    >
+    <Container className="mt-5 main-container p-0 text-center table-container">
       {events.length === 0 ? (
         <p className="text-danger bg-white rounded-4">No results available</p>
       ) : (
         <Table
-          id="results-table"
-          className="rounded-4"
+          className="rounded-4 overflow-hidden"
           striped
           hover
           variant="dark"

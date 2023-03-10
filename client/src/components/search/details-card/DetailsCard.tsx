@@ -10,6 +10,11 @@ import { Avatar } from "@mui/material";
 import ArtistsTab, { IArtistDetails } from "./artists-tab/ArtistsTab";
 import axios from "axios";
 import VenueTab, { IVenueDetails } from "./venue-tab/VenueTab";
+import {
+  addToFavorite,
+  isFavorite,
+  removeFromFavorite,
+} from "../../../utils/favorites";
 
 const DetailsCard = ({
   eventId,
@@ -37,8 +42,8 @@ const DetailsCard = ({
           }
         );
         setEventDetails(eventResponse.data);
-        const storedData = localStorage.getItem(eventId);
-        if (storedData) {
+
+        if (isFavorite(eventId)) {
           setFavorite(true);
         }
 
@@ -96,6 +101,28 @@ const DetailsCard = ({
     setTab(newValue);
   };
 
+  const handleFavClick = () => {
+    if (!eventDetails) return;
+    if (favorite) {
+      alert("Removed form Favorites");
+      removeFromFavorite(eventId);
+    } else {
+      alert("Event Added to Favorites");
+      addToFavorite({
+        id: eventId,
+        date: eventDetails.date,
+        event: eventDetails.name,
+        category: eventDetails.genre
+          .map((g, i) => {
+            return g + (i < eventDetails.genre.length - 1 ? " | " : "");
+          })
+          .join(""),
+        venue: eventDetails.venue,
+      });
+    }
+    setFavorite(!favorite);
+  };
+
   return (
     <Container
       id="details-card-container"
@@ -117,16 +144,7 @@ const DetailsCard = ({
             sx={{ bgcolor: "white" }}
             role={"button"}
             className="mx-auto"
-            onClick={() => {
-              if (favorite) {
-                alert("Removed form Favorites");
-                localStorage.removeItem(eventId);
-              } else {
-                alert("Event Added to Favorites");
-                localStorage.setItem(eventId, "liked");
-              }
-              setFavorite(!favorite);
-            }}
+            onClick={handleFavClick}
           >
             {favorite ? (
               <FavoriteIcon sx={{ color: "#ea3323" }} />
