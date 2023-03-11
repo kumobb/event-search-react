@@ -12,12 +12,14 @@ import {
 import * as geohash from "ngeohash";
 import { logRequests } from "./middlewares";
 import spotify from "./spotify";
+import path from "path";
 
 const app = express();
-const port = 3001;
+const port = 8080;
 
 app.use(cors());
 app.use(logRequests);
+app.use(express.static(path.join(__dirname, "../build")));
 
 app.get("/api/suggest", async (req, res) => {
   const keyword = req.query.keyword;
@@ -230,6 +232,10 @@ app.get("/api/venue", async (req, res) => {
     console.log(error);
     res.status(500).send("Error fetching venue details from Ticketmaster");
   }
+});
+
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "../build", "index.html"));
 });
 
 app.listen(port, () => {

@@ -46,7 +46,9 @@ const SearchForm = ({
 
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/tickets`,
+        process.env.REACT_APP_API_URL
+          ? process.env.REACT_APP_API_URL
+          : "" + "/api/tickets",
         {
           params: {
             keyword: formValues.keyword,

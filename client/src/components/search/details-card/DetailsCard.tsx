@@ -34,7 +34,9 @@ const DetailsCard = ({
       try {
         // fetch event details
         const eventResponse = await axios.get(
-          `${process.env.REACT_APP_API_URL}/api/event`,
+          process.env.REACT_APP_API_URL
+            ? process.env.REACT_APP_API_URL
+            : "" + "/api/event",
           {
             params: {
               id: eventId,
@@ -60,7 +62,9 @@ const DetailsCard = ({
               .filter((a) => a.segment === "Music")
               .map(async (a) => {
                 const artistResponse = await axios.get(
-                  `${process.env.REACT_APP_API_URL}/api/artist`,
+                  process.env.REACT_APP_API_URL
+                    ? process.env.REACT_APP_API_URL
+                    : "" + "/api/artist",
                   {
                     params: {
                       keyword: a.name,
@@ -79,7 +83,9 @@ const DetailsCard = ({
           setVenueDetails(null);
         } else {
           const venueResponse = await axios.get(
-            `${process.env.REACT_APP_API_URL}/api/venue`,
+            process.env.REACT_APP_API_URL
+              ? process.env.REACT_APP_API_URL
+              : "" + "/api/venue",
             {
               params: {
                 keyword: venue,

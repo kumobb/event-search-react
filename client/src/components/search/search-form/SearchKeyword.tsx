@@ -22,7 +22,9 @@ const SearchKeyword = ({
         setOptions([]);
         try {
           const response = await axios.get(
-            `${process.env.REACT_APP_API_URL}/api/suggest`,
+            process.env.REACT_APP_API_URL
+              ? process.env.REACT_APP_API_URL
+              : "" + "/api/suggest",
             {
               params: {
                 keyword,
