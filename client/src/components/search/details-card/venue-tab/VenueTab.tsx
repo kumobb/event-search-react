@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Button, Col, Container, Row } from "react-bootstrap";
-import ClamppableSection from "./ClamppableSection";
+import ClampableSection from "./ClampableSection";
 import GoogleMapModal from "./GoogleMapModal";
 
 interface IVenueDetails {
@@ -28,21 +28,26 @@ const VenueTab = ({ venueDetails }: { venueDetails: IVenueDetails | null }) => {
       {!venueDetails ? (
         <div className="py-5">
           <p className="text-danger bg-white rounded-4">
-            No event details to show
+            No venue details to show
           </p>
         </div>
       ) : (
         <>
           <Row className="line-clamp-2">
             <Col sm={12} md={6}>
-              <h4>Name</h4>
-              <p>{venueDetails.name}</p>
+              {venueDetails.name && (
+                <ClampableSection name={"Name"} content={venueDetails.name} />
+              )}
 
-              <h4>Address</h4>
-              <p>{venueDetails.address}</p>
+              {venueDetails.address && (
+                <ClampableSection
+                  name={"Address"}
+                  content={venueDetails.address}
+                />
+              )}
 
               {venueDetails.number && (
-                <ClamppableSection
+                <ClampableSection
                   name={"Phone Number"}
                   content={venueDetails.number}
                 />
@@ -50,20 +55,20 @@ const VenueTab = ({ venueDetails }: { venueDetails: IVenueDetails | null }) => {
             </Col>
             <Col sm={12} md={6}>
               {venueDetails.openHours && (
-                <ClamppableSection
+                <ClampableSection
                   name={"Open Hours"}
                   content={venueDetails.openHours}
                 />
               )}
 
               {venueDetails.generalRule && (
-                <ClamppableSection
+                <ClampableSection
                   name={"General Rule"}
                   content={venueDetails.generalRule}
                 />
               )}
               {venueDetails.childRule && (
-                <ClamppableSection
+                <ClampableSection
                   name={"Child Rule"}
                   content={venueDetails.childRule}
                 />

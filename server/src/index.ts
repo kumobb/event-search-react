@@ -19,7 +19,10 @@ const port = 8080;
 
 app.use(cors());
 app.use(logRequests);
-app.use(express.static(path.join(__dirname, "../build")));
+
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static(path.join(__dirname, "../build")));
+}
 
 app.get("/api/suggest", async (req, res) => {
   const keyword = req.query.keyword;
@@ -215,7 +218,10 @@ app.get("/api/venue", async (req, res) => {
 
     const venue = response.data._embedded?.venues[0];
 
-    if (!venue) res.send(null);
+    if (!venue) {
+      res.send(null);
+      return;
+    }
 
     res.send({
       name: venue.name,
