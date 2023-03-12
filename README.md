@@ -17,31 +17,31 @@ Then the server will be served at http://localhost:8080
 
 ## Deployment
 In deployment, the client is built into static files and the server is transpiled into javascript files. The server will serve the static files.
-Then the server is deployed to Google cloud.
+Then the server is deployed to Google Cloud.
 
 ### Build the client
-First build the client into static files, inside `/client` folder run:
+First build the client into static files, inside `/client` run:
 ```
 npm run build
 ```
-The built static files will be in the `/server/build` folder.
+The built static files will be in `/server/build`.
 
 ### Transpile the server
-Then transpile the server's typescript files into javascript, inside `/server` folder run:
+Then transpile the server's typescript files into javascript, inside `/server` run:
 ```
 tsc
 ```
-The transpiled javascript files will be in the `/server/dist` folder.
+The transpiled javascript files will be in `/server/dist`.
 
 ### Local testing
-To test the deployment build locally, inside `/server` folder run:
+To test the deployment build locally, inside `/server` run:
 ```
 npm start
 ```
 Then the app will be served at http://localhost:8080
 
 ### Deploy to Google cloud
-To deploy to Google cloud, inside `/server` folder run:
+To deploy to Google cloud, inside `/server` run:
 ```
 gcloud app deploy
 ```
