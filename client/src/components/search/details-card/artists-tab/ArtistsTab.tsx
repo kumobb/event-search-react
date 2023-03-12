@@ -18,7 +18,7 @@ const ArtistsTab = ({
   artistsDetails: IArtistDetails[];
 }) => {
   return (
-    <Container className="py-3 px-0 details-tab text-center">
+    <Container className="py-3 text-center details-tab">
       {!artistsDetails || artistsDetails.length === 0 ? (
         <div className="px-3 py-5">
           <p className="text-danger bg-white rounded-4 ">

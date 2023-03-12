@@ -36,9 +36,9 @@ const EventsTab = ({
   eventDetails: IEventDetails | null;
 }) => {
   return (
-    <Container className="py-4 text-center">
+    <Container className="py-3 text-center details-tab">
       {eventDetails && (
-        <Row className="details-tab">
+        <Row>
           <Col md={5}>
             <h4>Date</h4>
             <p>

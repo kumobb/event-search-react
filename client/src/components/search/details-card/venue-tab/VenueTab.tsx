@@ -24,9 +24,9 @@ const VenueTab = ({ venueDetails }: { venueDetails: IVenueDetails | null }) => {
   };
 
   return (
-    <Container className="py-4 text-center details-tab">
+    <Container className="py-3 text-center details-tab">
       {!venueDetails ? (
-        <div className="py-5">
+        <div className="px-3 py-5">
           <p className="text-danger bg-white rounded-4">
             No venue details to show
           </p>
