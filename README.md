@@ -1,3 +1,6 @@
+# Link to the deployed app
+https://event-search-react.wl.r.appspot.com/
+
 # How to run the project
 
 ## Development 
