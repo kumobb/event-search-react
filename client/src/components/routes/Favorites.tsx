@@ -37,7 +37,7 @@ const Favorites = () => {
           <h4>List of your favorite events</h4>
           <Table
             className="rounded-4 overflow-hidden bg-body"
-            striped
+            hover
             responsive="md"
           >
             <thead>
