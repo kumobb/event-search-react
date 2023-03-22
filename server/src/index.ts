@@ -2,13 +2,13 @@ import express from "express";
 import axios from "axios";
 import cors from "cors";
 import {
-  API_KEY,
   SUGGEST_URL,
   TICKET_URL,
   EVENT_URL,
   SEGMENTS,
   VENUE_URL,
 } from "./consts";
+import { TICKETMASTER_KEY } from "./secrets";
 import * as geohash from "ngeohash";
 import { logRequests } from "./middlewares";
 import spotify from "./spotify";
@@ -28,7 +28,7 @@ app.get("/api/suggest", async (req, res) => {
   try {
     const response = await axios.get(SUGGEST_URL, {
       params: {
-        apikey: API_KEY,
+        apikey: TICKETMASTER_KEY,
         keyword: keyword,
       },
     });
@@ -52,7 +52,7 @@ app.get("/api/tickets", async (req, res) => {
   try {
     const response = await axios.get(TICKET_URL, {
       params: {
-        apikey: API_KEY,
+        apikey: TICKETMASTER_KEY,
         keyword: req.query.keyword,
         segmentId: SEGMENTS[req.query.category as keyof typeof SEGMENTS],
         radius: req.query.distance,
@@ -102,7 +102,7 @@ app.get("/api/event", async (req, res) => {
   try {
     const response = await axios.get(EVENT_URL + `${id}.json`, {
       params: {
-        apikey: API_KEY,
+        apikey: TICKETMASTER_KEY,
       },
     });
 
@@ -209,7 +209,7 @@ app.get("/api/venue", async (req, res) => {
   try {
     const response = await axios.get(VENUE_URL, {
       params: {
-        apikey: API_KEY,
+        apikey: TICKETMASTER_KEY,
         keyword,
       },
     });

@@ -3,7 +3,7 @@ import { Button, Modal } from "react-bootstrap";
 import { GoogleMap, MarkerF, useJsApiLoader } from "@react-google-maps/api";
 
 import { getCoordinates } from "../../../../utils/coordinates";
-import { GOOGLEMAP_KEY } from "../../../../utils/consts";
+import { GOOGLEMAP_KEY } from "../../../../utils/secrets";
 
 interface Coord {
   lat: number;
