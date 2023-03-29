@@ -7,8 +7,8 @@ import { IArtistDetails } from "./ArtistsTab";
 const ArtistCarouselItem = ({ artist }: { artist: IArtistDetails }) => {
   return (
     <>
-      <Row className="justify-content-evenly mb-3 flex-md-nowrap">
-        <Col sm={12} md={"auto"}>
+      <Row className="justify-content-evenly mb-3">
+        <Col sm={12} md={4}>
           <Avatar
             alt="Artist Image"
             src={artist.image}
@@ -17,7 +17,7 @@ const ArtistCarouselItem = ({ artist }: { artist: IArtistDetails }) => {
           />
           <h3 className="mx-auto">{artist.name}</h3>
         </Col>
-        <Col sm={12} md={"auto"} className="py-3 pt-md-5">
+        <Col sm={12} md={3} className="py-3 pt-md-5">
           <h4>Popularity</h4>
           <Box sx={{ position: "relative", display: "inline-flex" }}>
             <CircularProgress
@@ -41,11 +41,11 @@ const ArtistCarouselItem = ({ artist }: { artist: IArtistDetails }) => {
             </Box>
           </Box>
         </Col>
-        <Col sm={12} md={"auto"} className="py-3 pt-md-5">
+        <Col sm={12} md={2} className="py-3 pt-md-5">
           <h4>Followers</h4>
           {artist.followers.toLocaleString()}
         </Col>
-        <Col sm={12} md={"auto"} className="py-3 pt-md-5">
+        <Col sm={12} md={3} className="py-3 pt-md-5">
           <h4>Spotify Link</h4>
           <a href={artist.link}>
             <Icon icon="mdi:spotify" color="#65d46e" width={40} height={40} />
