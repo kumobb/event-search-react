@@ -1,6 +1,7 @@
 import React from "react";
 import { Carousel, Container } from "react-bootstrap";
 import ArtistCarouselItem from "./ArtistCarouselItem";
+import "./MyCarousel.css";
 
 interface IArtistDetails {
   id: string;
@@ -32,20 +33,6 @@ const ArtistsTab = ({
           indicators={false}
           touch={false}
           controls={artistsDetails.length > 1}
-          prevIcon={
-            <span
-              aria-hidden="true"
-              className="carousel-control-prev-icon"
-              style={{ marginLeft: "-70%" }}
-            />
-          }
-          nextIcon={
-            <span
-              aria-hidden="true"
-              className="carousel-control-next-icon"
-              style={{ marginRight: "-70%" }}
-            />
-          }
         >
           {artistsDetails.map((a) => (
             <Carousel.Item key={a.id}>

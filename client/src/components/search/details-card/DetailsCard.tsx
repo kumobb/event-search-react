@@ -59,15 +59,19 @@ const DetailsCard = ({
             artists
               .filter((a) => a.segment === "Music")
               .map(async (a) => {
-                const artistResponse = await axios.get(
-                  `${process.env.REACT_APP_API_URL}/api/artist`,
-                  {
-                    params: {
-                      keyword: a.name,
-                    },
-                  }
-                );
-                return artistResponse.data;
+                try {
+                  const artistResponse = await axios.get(
+                    `${process.env.REACT_APP_API_URL}/api/artist`,
+                    {
+                      params: {
+                        keyword: a.name,
+                      },
+                    }
+                  );
+                  return artistResponse.data;
+                } catch (error) {
+                  return null;
+                }
               })
           );
           setArtistsDetails(artistDetails.filter((a) => a));

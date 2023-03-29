@@ -7,7 +7,7 @@ import { IArtistDetails } from "./ArtistsTab";
 const ArtistCarouselItem = ({ artist }: { artist: IArtistDetails }) => {
   return (
     <>
-      <Row className="justify-content-evenly mb-3">
+      <Row className="justify-content-evenly mb-3 flex-md-nowrap">
         <Col sm={12} md={"auto"}>
           <Avatar
             alt="Artist Image"
@@ -15,7 +15,7 @@ const ArtistCarouselItem = ({ artist }: { artist: IArtistDetails }) => {
             sx={{ width: 128, height: 128 }}
             className="mx-auto"
           />
-          <h2 className="mx-auto">{artist.name}</h2>
+          <h3 className="mx-auto">{artist.name}</h3>
         </Col>
         <Col sm={12} md={"auto"} className="py-3 pt-md-5">
           <h4>Popularity</h4>

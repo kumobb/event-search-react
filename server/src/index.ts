@@ -154,21 +154,25 @@ app.get("/api/artist", async (req, res) => {
 
   while (tryCount < maxTries) {
     try {
-      const response = await spotify.searchArtists(keyword);
+      let encodedKeyword = encodeURIComponent(keyword);
+      encodedKeyword = encodedKeyword.replace(/%20/g, " ");
+      encodedKeyword = encodedKeyword.replace(/%26/g, "&");
 
-      const artistDetails = response.body.artists?.items
-        .filter((a) => a.name.toLowerCase() === keyword.toLowerCase())
-        .map((a) => {
-          return {
-            id: a.id,
-            name: keyword,
-            followers: a.followers.total,
-            popularity: a.popularity,
-            link: a.uri,
-            image: a.images[0].url,
-            albums: [] as string[],
-          };
-        })[0];
+      const response = await spotify.searchArtists(encodedKeyword, {
+        limit: 1,
+      });
+
+      const artistDetails = response.body.artists?.items.map((a) => {
+        return {
+          id: a.id,
+          name: keyword,
+          followers: a.followers.total,
+          popularity: a.popularity,
+          link: a.uri,
+          image: a.images[0]?.url,
+          albums: [] as string[],
+        };
+      })[0];
 
       if (!artistDetails) {
         res.send(artistDetails);
