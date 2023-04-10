@@ -12,7 +12,7 @@ npm start
 ```
 Then the client will be served at http://localhost:3000
 
-To start server, inside `/client` run:
+To start server, inside `/server` run:
 ```console
 npm run dev
 ```
